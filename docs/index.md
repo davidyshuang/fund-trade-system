@@ -21,7 +21,7 @@
 | 需求 | [产品需求文档 PRD](03-prd.md) | 功能需求、REST API 契约、验收标准 |
 | 技术 | [系统设计](04-design.md) | 架构、DDD 领域模型、领域事件、分层规范、TDD 策略 |
 | 技术 | [架构决策 ADR](05-adr.md) | 关键架构决策与理由（含踩坑记录） |
-| 交付 | [部署指南](06-deployment.md) | 从零开始免费部署到公网（Cloudflare + Render + Neon） |
+| 交付 | [部署与 CI/CD 指南](06-deployment.md) | 从零开始免费部署 + 自动发布机制（Cloudflare + Render + Neon + GitHub Actions） |
 | 交付 | [使用指南](07-user-guide.md) | 面向用户的系统操作手册 |
 
 ## 在线体验
