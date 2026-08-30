@@ -135,14 +135,14 @@ class ApiSmokeTest {
     }
 
     @Test
-    @DisplayName("异常链路：资金不足下单返回 40003 业务错误码")
+    @DisplayName("异常链路：资金不足下单返回 40003 业务错误码（HTTP 200 + 业务码）")
     void test_资金不足_返回业务错误码() throws Exception {
         mockMvc.perform(post("/api/orders/subscription")
                         .contentType("application/json")
                         .content("""
                                 {"customerId":"C001","productId":"P001","subscriptionAmount":"50000.00"}
                                 """))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(40003));
     }
 

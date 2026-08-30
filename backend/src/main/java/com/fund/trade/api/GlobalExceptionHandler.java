@@ -16,17 +16,17 @@ public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    /** 业务异常 → HTTP 400 + 业务错误码 */
+    /** 业务异常 → HTTP 200 + 业务错误码（业务规则拦截走 200，前端按 code 展示提示） */
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ApiResponse<Void>> handleBusiness(BusinessException e) {
-        return ResponseEntity.badRequest()
+        return ResponseEntity.ok()
                 .body(new ApiResponse<>(Integer.parseInt(e.getCode()), e.getMessage(), null));
     }
 
-    /** 领域层参数/状态非法 → HTTP 400 + 40000 */
+    /** 领域层参数/状态非法 → HTTP 200 + 40000 */
     @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
     public ResponseEntity<ApiResponse<Void>> handleIllegalArgument(RuntimeException e) {
-        return ResponseEntity.badRequest()
+        return ResponseEntity.ok()
                 .body(new ApiResponse<>(40000, e.getMessage(), null));
     }
 

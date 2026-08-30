@@ -21,7 +21,9 @@ http.interceptors.response.use(
     return Promise.reject(new Error((body && body.message) || '请求失败'))
   },
   (err) => {
-    ElMessage.error(err.message || '网络异常，请确认后端服务已启动')
+    // 优先展示后端返回的业务提示（如"申购金额不能低于起购金额 1000.00"）
+    const msg = err.response?.data?.message || err.message || '网络异常，请确认后端服务已启动'
+    ElMessage.error(msg)
     return Promise.reject(err)
   }
 )
