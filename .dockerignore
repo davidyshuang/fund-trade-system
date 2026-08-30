@@ -1,0 +1,9 @@
+# 构建上下文排除项（减小 Docker 上下文体积）
+backend/target/
+frontend/node_modules/
+frontend/dist/
+.git/
+.workbuddy/
+*.db
+.DS_Store
+*.log
