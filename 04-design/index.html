@@ -1,0 +1,1542 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="基金申购赎回管理系统 - 需求、设计、部署与使用文档">
+      
+      
+        <meta name="author" content="fund-trade-system">
+      
+      
+      
+        <link rel="prev" href="../03-prd/">
+      
+      
+        <link rel="next" href="../05-adr/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>系统设计 - 基金申购赎回管理系统</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://unpkg.com/mermaid@10.9.1/dist/mermaid.min.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#system-design" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="基金申购赎回管理系统" class="md-header__button md-logo" aria-label="基金申购赎回管理系统" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            基金申购赎回管理系统
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              系统设计
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/davidyshuang/fund-trade-system" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    fund-trade-system
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../01-idea/" class="md-tabs__link">
+          
+  
+  
+  需求
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  技术设计
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../06-deployment/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  部署与 CI/CD
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../07-user-guide/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  使用指南
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="基金申购赎回管理系统" class="md-nav__button md-logo" aria-label="基金申购赎回管理系统" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    基金申购赎回管理系统
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/davidyshuang/fund-trade-system" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    fund-trade-system
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    需求
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    需求
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-idea/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    创意愿景 Idea
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-brd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    业务需求 BRD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-prd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    产品需求 PRD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    技术设计
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    技术设计
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    系统设计
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    系统设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一、系统架构
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ddd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        二、DDD 领域模型
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="二、DDD 领域模型">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 聚合设计与不变量
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 领域模型图
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 订单状态机
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        三、领域事件清单
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ddd_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        四、DDD 四层分层规范
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="四、DDD 四层分层规范">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 分层职责与禁止事项
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 工程目录结构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 代码架构铁律：防循环依赖
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tdd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        五、TDD 开发策略
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="五、TDD 开发策略">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 红 → 绿 → 重构循环
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 测试分层策略
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 场景 → 测试用例映射示例
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 测试现状
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        六、里程碑
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-adr/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    架构决策 ADR
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    部署与 CI/CD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-user-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    使用指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="system-design">技术设计文档（System Design）<a class="headerlink" href="#system-design" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>文档编号：DESIGN-001 ｜ 版本 v1.0 ｜ 状态：已实现 ｜ 日期：2026-08-30</p>
+</blockquote>
+<h2 id="_1">一、系统架构<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<p>前后端分离架构，RESTful JSON API 通信：</p>
+<div class="highlight"><pre><span></span><code>┌──────────────────┐      HTTP/JSON       ┌──────────────────┐
+│  前端（Vue3 +    │ ──────────────────▶  │  后端（Java 21 +  │
+│  Element Plus）  │ ◀──────────────────  │  Spring Boot 3.x）│
+└──────────────────┘      CORS 已配置      └────────┬─────────┘
+                                                     │ jdbc
+                                             ┌───────▼────────┐
+                                             │  PostgreSQL 16  │
+                                             └────────────────┘
+</code></pre></div>
+<ul>
+<li>前端：Vue3 + Vite + Element Plus + axios（<code>frontend/</code>）</li>
+<li>后端：JDK21 + Spring Boot 3.2，DDD 四层（<code>backend/</code>）</li>
+<li>数据库：PostgreSQL 16（生产/云端 Neon；本地 Homebrew PG）</li>
+<li>测试：JUnit 5，领域单测（纯内存）+ 集成测试（PG 测试库）+ API 冒烟（MockMvc）</li>
+</ul>
+<h2 id="ddd">二、DDD 领域模型<a class="headerlink" href="#ddd" title="Permanent link">&para;</a></h2>
+<h3 id="21">2.1 聚合设计与不变量<a class="headerlink" href="#21" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>聚合根</th>
+<th>所属上下文</th>
+<th>聚合边界内对象</th>
+<th>核心不变量（业务规则收敛于此）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FundProduct</td>
+<td>产品</td>
+<td>赎回费率规则（实体）、费率值对象</td>
+<td>在售状态才可申购/赎回；费率规则合法（0 ≤ 费率 &lt; 1）；起购金额 &gt; 0</td>
+</tr>
+<tr>
+<td>SubscriptionOrder</td>
+<td>交易</td>
+<td>状态机、确认结果值对象</td>
+<td>状态只能沿状态机单向流转；确认必须在资金冻结成功后；确认份额/费用仅在确认时一次性写入</td>
+</tr>
+<tr>
+<td>RedemptionOrder</td>
+<td>交易</td>
+<td>状态机、确认结果值对象</td>
+<td>状态只能沿状态机单向流转；确认必须在份额冻结成功后；赎回份额 &gt; 0 且不超过下单时冻结份额</td>
+</tr>
+<tr>
+<td>SharePosition</td>
+<td>TA 账户</td>
+<td>份额值对象</td>
+<td>总份额 = 可用份额 + 冻结份额；冻结/解冻不可超过可用/冻结份额；各份额非负</td>
+</tr>
+<tr>
+<td>FundsAccount</td>
+<td>资金</td>
+<td>Money 值对象</td>
+<td>可用余额 = 余额 − 冻结金额；冻结不可超过可用余额；金额非负、精度 2 位</td>
+</tr>
+</tbody>
+</table>
+<h3 id="22">2.2 领域模型图<a class="headerlink" href="#22" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>classDiagram
+    class FundProduct {
+        &lt;&lt;聚合根 · 产品上下文&gt;&gt;
+        +String productId
+        +String productCode 基金代码
+        +String productName 基金名称
+        +ProductStatus status 在售/暂停
+        +Money minSubscriptionAmount 起购金额
+        +Rate subscriptionFeeRate 申购费率
+        +RiskLevel riskLevel 风险等级
+        +placeOnSale() 上架
+        +suspend() 暂停申购
+        +canSubscribe() Boolean 可否申购
+        +calcSubscriptionFee(Money) Money 计算申购费(外扣法)
+        +calcRedemptionFee(Share, int持有天数) Money 计算赎回费
+    }
+    class RedemptionFeeRule {
+        &lt;&lt;实体&gt;&gt;
+        +int maxHoldingDays 上限天数
+        +Rate feeRate 费率
+    }
+    class SubscriptionOrder {
+        &lt;&lt;聚合根 · 交易上下文&gt;&gt;
+        +String orderId
+        +String customerId
+        +String productId
+        +Money subscriptionAmount 申购金额
+        +TradeDate tDay T日
+        +SubscriptionStatus status 状态
+        +NetValue confirmedNetValue 确认净值
+        +Share confirmedShares 确认份额
+        +Money confirmedFee 确认费用
+        +String failReason 失败原因
+        +place() 下单
+        +markFundsFrozen() 资金冻结成功
+        +markFundsFreezeFailed() 资金冻结失败关闭
+        +confirm(NetValue) T+1确认
+        +fail(String) 确认失败
+    }
+    class RedemptionOrder {
+        &lt;&lt;聚合根 · 交易上下文&gt;&gt;
+        +String orderId
+        +String customerId
+        +String productId
+        +Share redemptionShares 赎回份额
+        +TradeDate tDay T日
+        +RedemptionStatus status 状态
+        +NetValue confirmedNetValue 确认净值
+        +Money redemptionAmount 赎回金额
+        +Money redemptionFee 赎回费用
+        +String failReason 失败原因
+        +place() 下单
+        +markSharesFrozen() 份额冻结成功
+        +markSharesFreezeFailed() 份额冻结失败关闭
+        +confirm(NetValue) T+1确认
+        +fail(String) 确认失败
+    }
+    class SharePosition {
+        &lt;&lt;聚合根 · TA账户上下文&gt;&gt;
+        +String taAccountId
+        +String customerId
+        +String productId
+        +Share totalShares 总份额
+        +Share frozenShares 冻结份额
+        +Share availableShares() 可用份额
+        +freeze(Share) 冻结份额
+        +unfreeze(Share) 解冻份额
+        +increase(Share) 申购确认入账
+        +decreaseAndUnfreeze(Share) 赎回确认扣减
+    }
+    class FundsAccount {
+        &lt;&lt;聚合根 · 资金上下文&gt;&gt;
+        +String accountId
+        +String customerId
+        +Money balance 总余额
+        +Money frozenAmount 冻结金额
+        +Money availableAmount() 可用余额
+        +freeze(Money) 冻结
+        +unfreeze(Money) 解冻
+        +deductFrozen(Money) 扣除冻结(确认扣款)
+        +credit(Money) 入账(赎回款)
+    }
+    class Money {
+        &lt;&lt;值对象&gt;&gt; +BigDecimal amount 金额(2位小数)
+    }
+    class Share {
+        &lt;&lt;值对象&gt;&gt; +BigDecimal amount 份额(2位小数)
+    }
+    class NetValue {
+        &lt;&lt;值对象&gt;&gt; +String productId +LocalDate navDate +BigDecimal value 净值(4位小数)
+    }
+    class TradeDate {
+        &lt;&lt;值对象&gt;&gt; +LocalDate date T日
+    }
+    class TradeCalendar {
+        &lt;&lt;领域服务&gt;&gt;
+        +boolean isTradeDay(LocalDate)
+        +LocalDate nextTradeDay(LocalDate)
+        +TradeDate resolveTDay(LocalDateTime now) 按截单时间解析T日
+    }
+    class ConfirmationDomainService {
+        &lt;&lt;领域服务&gt;&gt;
+        +confirmSubscription(SubscriptionOrder, NetValue, FundProduct)
+        +confirmRedemption(RedemptionOrder, NetValue, FundProduct)
+    }
+    FundProduct "1" --&gt; "*" RedemptionFeeRule : 赎回费率梯度
+    SubscriptionOrder ..&gt; FundProduct : 引用产品ID
+    SubscriptionOrder ..&gt; TradeDate : T日
+    SubscriptionOrder ..&gt; Money : 申购金额
+    SubscriptionOrder ..&gt; NetValue : 确认净值
+    SubscriptionOrder ..&gt; Share : 确认份额
+    RedemptionOrder ..&gt; FundProduct : 引用产品ID
+    RedemptionOrder ..&gt; Share : 赎回份额
+    RedemptionOrder ..&gt; NetValue : 确认净值
+    SharePosition ..&gt; Share : 份额
+    FundsAccount ..&gt; Money : 金额
+    TradeCalendar ..&gt; TradeDate : 产出
+    ConfirmationDomainService ..&gt; SubscriptionOrder : 确认
+    ConfirmationDomainService ..&gt; RedemptionOrder : 确认</code></pre>
+<blockquote>
+<p>聚合之间<strong>只通过 ID 引用</strong>（如订单持有 productId），禁止对象级关联导航；跨聚合一致性由领域事件 + 应用事务保证。</p>
+</blockquote>
+<h3 id="23">2.3 订单状态机<a class="headerlink" href="#23" title="Permanent link">&para;</a></h3>
+<p><strong>申购单状态机：</strong></p>
+<pre class="mermaid"><code>stateDiagram-v2
+    [*] --&gt; CREATED : 提交申购(校验通过, 待冻结资金)
+    CREATED --&gt; FUNDS_FROZEN : FundsFrozen 资金冻结成功
+    CREATED --&gt; CLOSED : FundsFreezeFailed 资金冻结失败
+    FUNDS_FROZEN --&gt; CONFIRMED : T+1确认成功(份额入账, 资金扣款)
+    FUNDS_FROZEN --&gt; CONFIRM_FAILED : 确认失败(资金解冻退回)
+    CONFIRMED --&gt; [*]
+    CONFIRM_FAILED --&gt; [*]
+    CLOSED --&gt; [*]</code></pre>
+<p><strong>赎回单状态机：</strong></p>
+<pre class="mermaid"><code>stateDiagram-v2
+    [*] --&gt; CREATED : 提交赎回(校验通过, 待冻结份额)
+    CREATED --&gt; SHARES_FROZEN : SharesFrozen 份额冻结成功
+    CREATED --&gt; CLOSED : SharesFreezeFailed 份额冻结失败
+    SHARES_FROZEN --&gt; CONFIRMED : T+1确认成功(份额扣减, 资金入账)
+    SHARES_FROZEN --&gt; CONFIRM_FAILED : 确认失败(份额解冻恢复)
+    CONFIRMED --&gt; [*]
+    CONFIRM_FAILED --&gt; [*]
+    CLOSED --&gt; [*]</code></pre>
+<h2 id="_2">三、领域事件清单<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>事件名（中文名）</th>
+<th>发布方上下文</th>
+<th>订阅方上下文</th>
+<th>触发时机</th>
+<th>携带数据</th>
+<th>订阅方后续动作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>SubscriptionOrderPlaced（申购单已下单）</td>
+<td>交易</td>
+<td>资金</td>
+<td>申购单创建成功，状态 CREATED</td>
+<td>orderId、customerId、productId、金额、T日</td>
+<td>资金账户冻结对应金额（成功→事件2；失败→事件3）</td>
+</tr>
+<tr>
+<td>2</td>
+<td>FundsFrozen（资金已冻结）</td>
+<td>资金</td>
+<td>交易</td>
+<td>申购资金冻结成功</td>
+<td>orderId、冻结金额、冻结流水号</td>
+<td>申购单状态 CREATED → FUNDS_FROZEN</td>
+</tr>
+<tr>
+<td>3</td>
+<td>FundsFreezeFailed（资金冻结失败）</td>
+<td>资金</td>
+<td>交易</td>
+<td>可用余额不足等冻结失败</td>
+<td>orderId、失败原因</td>
+<td>申购单状态 CREATED → CLOSED</td>
+</tr>
+<tr>
+<td>4</td>
+<td>RedemptionOrderPlaced（赎回单已下单）</td>
+<td>交易</td>
+<td>TA 账户</td>
+<td>赎回单创建成功，状态 CREATED</td>
+<td>orderId、customerId、productId、赎回份额、T日</td>
+<td>份额持仓冻结对应份额（成功→事件5；失败→事件6）</td>
+</tr>
+<tr>
+<td>5</td>
+<td>SharesFrozen（份额已冻结）</td>
+<td>TA 账户</td>
+<td>交易</td>
+<td>可用份额冻结成功</td>
+<td>orderId、冻结份额</td>
+<td>赎回单状态 CREATED → SHARES_FROZEN</td>
+</tr>
+<tr>
+<td>6</td>
+<td>SharesFreezeFailed（份额冻结失败）</td>
+<td>TA 账户</td>
+<td>交易</td>
+<td>可用份额不足等冻结失败</td>
+<td>orderId、失败原因</td>
+<td>赎回单状态 CREATED → CLOSED</td>
+</tr>
+<tr>
+<td>7</td>
+<td>NetValuePublished（净值已发布）</td>
+<td>估值</td>
+<td>交易</td>
+<td>管理员发布 T 日净值</td>
+<td>productId、净值日期、净值</td>
+<td>使 T 日该产品待确认订单具备确认条件（供批处理消费）</td>
+</tr>
+<tr>
+<td>8</td>
+<td>SubscriptionConfirmed（申购已确认）</td>
+<td>交易</td>
+<td>TA 账户、资金</td>
+<td>T+1 批处理确认申购成功</td>
+<td>orderId、确认份额、确认净值、申购费</td>
+<td>TA 账户持仓 increase；资金账户 deductFrozen（扣除冻结申购款）</td>
+</tr>
+<tr>
+<td>9</td>
+<td>SubscriptionConfirmationFailed（申购确认失败）</td>
+<td>交易</td>
+<td>资金</td>
+<td>确认环节失败</td>
+<td>orderId、失败原因</td>
+<td>资金账户 unfreeze（解冻退回）</td>
+</tr>
+<tr>
+<td>10</td>
+<td>RedemptionConfirmed（赎回已确认）</td>
+<td>交易</td>
+<td>TA 账户、资金</td>
+<td>T+1 批处理确认赎回成功</td>
+<td>orderId、确认净值、赎回费、赎回金额</td>
+<td>TA 账户 decreaseAndUnfreeze；资金账户 credit（赎回款入账）</td>
+</tr>
+<tr>
+<td>11</td>
+<td>RedemptionConfirmationFailed（赎回确认失败）</td>
+<td>交易</td>
+<td>TA 账户</td>
+<td>确认环节失败</td>
+<td>orderId、失败原因</td>
+<td>持仓 unfreeze（解冻恢复可用）</td>
+</tr>
+<tr>
+<td>12</td>
+<td>ProductSuspended（产品已暂停申购）</td>
+<td>产品</td>
+<td>交易</td>
+<td>运营暂停产品</td>
+<td>productId、生效时间</td>
+<td>后续该产品下单请求直接拒绝（下单前置校验）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>事件实现：进程内事件总线（Spring ApplicationEvent 适配），同一事务内发布，事件处理器由应用层编排，各上下文只消费自己关心的事件。</p>
+</blockquote>
+<h2 id="ddd_1">四、DDD 四层分层规范<a class="headerlink" href="#ddd_1" title="Permanent link">&para;</a></h2>
+<h3 id="41">4.1 分层职责与禁止事项<a class="headerlink" href="#41" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>层</th>
+<th>组成</th>
+<th>职责</th>
+<th>严禁</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>api</td>
+<td>Controller、出入参 DTO、全局异常处理器、统一响应体</td>
+<td>接收请求、Bean Validation 参数校验、调用应用服务、响应封装</td>
+<td>出现任何业务规则；直接访问仓储或数据库</td>
+</tr>
+<tr>
+<td>application</td>
+<td>ApplicationService、事件分发器、T+1 确认批处理 Job</td>
+<td>流程编排（取聚合→调领域方法→存仓储→发事件）、事务边界管理（<code>@Transactional</code>）、领域事件发布/订阅</td>
+<td>编写核心业务规则；持有业务状态</td>
+</tr>
+<tr>
+<td>domain</td>
+<td>聚合根、实体、值对象、领域服务、领域事件、仓储接口</td>
+<td><strong>全部业务规则与不变量</strong>：状态机流转、份额/金额计算、交易日历、费率计算</td>
+<td>依赖 Spring 框架注解（除仓储接口外）；直接依赖数据库/HTTP 等基础设施</td>
+</tr>
+<tr>
+<td>infrastructure</td>
+<td>仓储实现、数据库映射、事件总线实现、时间与日历数据适配、数据源配置</td>
+<td>技术细节实现；实现 domain 层定义的仓储接口；领域事件 → Spring 事件适配</td>
+<td>反向依赖 application / api 层</td>
+</tr>
+</tbody>
+</table>
+<p><strong>跨上下文协作铁律：</strong> 客户/产品/估值/资金/TA 账户上下文之间禁止直接方法调用，一律通过领域事件异步解耦；同上下文内允许领域服务组合调用。</p>
+<h3 id="42">4.2 工程目录结构<a class="headerlink" href="#42" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>fund-trade-system/
+├── backend/                                    # Java JDK21 + Spring Boot 3.x
+│   └── src/
+│       ├── main/
+│       │   ├── java/com/fund/trade/
+│       │   │   ├── api/                        # ① api 层
+│       │   │   │   ├── ProductController.java / OrderController.java
+│       │   │   │   ├── CustomerController.java / AdminController.java
+│       │   │   │   ├── ApiResponse.java（统一响应体）
+│       │   │   │   └── GlobalExceptionHandler.java
+│       │   │   ├── application/                # ② application 应用层
+│       │   │   │   ├── SubscriptionAppService.java / RedemptionAppService.java
+│       │   │   │   ├── ConfirmationAppService.java / QueryAppService.java
+│       │   │   │   ├── event/（FundsContext / TaAccount / TradeContext 事件处理器）
+│       │   │   │   └── ErrorCode.java / BusinessException.java
+│       │   │   ├── domain/                     # ③ domain 领域层（纯 Java，无框架依赖）
+│       │   │   │   ├── model/（product / order / position / funds 聚合）
+│       │   │   │   ├── valueobject/（Money / Share / NetValue / TradeDate / Rate）
+│       │   │   │   ├── service/（TradeCalendar / ConfirmationDomainService）
+│       │   │   │   ├── event/（DomainEvent / DomainEvents / DomainEventPublisher）
+│       │   │   │   └── repository/（8 个仓储接口）
+│       │   │   └── infrastructure/             # ④ infrastructure 基础设施层
+│       │   │       ├── persistence/（8 个 SQLite/PG 仓储实现 + DatabaseInitializer）
+│       │   │       ├── config/（WebMvcConfig CORS）
+│       │   │       └── SystemTradeTimeProvider.java
+│       │   └── resources/（schema.sql / application.yml）
+│       └── test/（domain 单测 / integration 集成测试 / api 冒烟 / testsupport）
+└── frontend/                                   # Vue3 + Element Plus
+    └── src/
+        ├── views/（ProductsView / OrdersView / PositionsView / AdminView）
+        ├── api/index.js（axios 封装，统一解包 code=0）
+        └── App.vue（四 Tab 导航）
+</code></pre></div>
+<h3 id="43">4.3 代码架构铁律：防循环依赖<a class="headerlink" href="#43" title="Permanent link">&para;</a></h3>
+<ul>
+<li>函数调用关系必须构成<strong>有向无环图（DAG）</strong>，严禁渲染函数互调形成环路</li>
+<li>分层：<code>数据层 → 计算层 → 渲染层</code>，只允许上层调下层或同层内单向调用</li>
+<li>设置统一刷新入口 <code>refreshAll()</code>，用户交互 → 改数据 → <code>refreshAll()</code> 按序渲染</li>
+<li>防御性初始化：<code>DOMContentLoaded</code> 中按固定顺序 加载数据 → 初始化状态 → <code>refreshAll()</code></li>
+</ul>
+<h2 id="tdd">五、TDD 开发策略<a class="headerlink" href="#tdd" title="Permanent link">&para;</a></h2>
+<h3 id="51">5.1 红 → 绿 → 重构循环<a class="headerlink" href="#51" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>红</strong>：从 BRD 第四章 GIVEN/WHEN/THEN 场景中选取一个，先编写失败的测试用例；</li>
+<li><strong>绿</strong>：编写<strong>最小</strong>实现代码让测试通过（允许丑陋，不允许缺功能）；</li>
+<li><strong>重构</strong>：消除重复、改善命名、下沉规则到领域层，测试保持绿色。</li>
+</ol>
+<h3 id="52">5.2 测试分层策略<a class="headerlink" href="#52" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>测试类型</th>
+<th>范围</th>
+<th>依赖</th>
+<th>用例来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>领域单元测试（优先、占比最大）</td>
+<td>聚合行为、值对象、领域服务（交易日历解析、费用/份额计算、状态机、不变量）</td>
+<td>纯 Java 内存对象，不依赖 Spring 与数据库</td>
+<td>S-01 ~ S-16 中可脱离数据库的规则断言</td>
+</tr>
+<tr>
+<td>应用层集成测试</td>
+<td>下单→冻结→确认端到端流程、事件分发、事务</td>
+<td><code>@SpringBootTest</code> + PostgreSQL 测试库</td>
+<td>S-06/S-09/S-13/S-15 等完整流程</td>
+</tr>
+<tr>
+<td>API 测试</td>
+<td>Controller 参数校验、响应封装、错误码</td>
+<td>MockMvc</td>
+<td>PRD 第三章接口契约</td>
+</tr>
+</tbody>
+</table>
+<h3 id="53">5.3 场景 → 测试用例映射示例<a class="headerlink" href="#53" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="cm">/**</span>
+<span class="cm"> * 场景 S-02：交易日 15:00 后提交申购，T 日为下一交易日</span>
+<span class="cm"> * GIVEN 当日为交易日(周二) 且时间为 15:30</span>
+<span class="cm"> * WHEN  解析 T 日</span>
+<span class="cm"> * THEN  T 日为周三(下一交易日)</span>
+<span class="cm"> */</span>
+<span class="nd">@Test</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">GIVEN_交易日15点30分_WHEN_解析T日_THEN_T日为下一交易日</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">LocalDate</span><span class="w"> </span><span class="n">tuesday</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LocalDate</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="mi">2026</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">   </span><span class="c1">// 周二，交易日</span>
+<span class="w">    </span><span class="n">LocalDateTime</span><span class="w"> </span><span class="n">afterCutoff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tuesday</span><span class="p">.</span><span class="na">atTime</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="w"> </span><span class="mi">30</span><span class="p">);</span>
+<span class="w">    </span><span class="n">TradeCalendar</span><span class="w"> </span><span class="n">calendar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TradeCalendar</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="n">Set</span><span class="p">.</span><span class="na">of</span><span class="p">());</span><span class="w"> </span><span class="c1">// 无额外节假日</span>
+
+<span class="w">    </span><span class="n">TradeDate</span><span class="w"> </span><span class="n">tDay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calendar</span><span class="p">.</span><span class="na">resolveTDay</span><span class="p">(</span><span class="n">afterCutoff</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">assertEquals</span><span class="p">(</span><span class="n">LocalDate</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="mi">2026</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">tDay</span><span class="p">.</span><span class="na">date</span><span class="p">());</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="54">5.4 测试现状<a class="headerlink" href="#54" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>74 个自动化测试全绿</strong>：62 个领域单测 + 12 个集成/API 测试</li>
+<li>CI（GitHub Actions）：JDK21 + PostgreSQL 16 service + <code>mvn test</code> + 前端构建，push 自动执行</li>
+</ul>
+<h2 id="_3">六、里程碑<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>里程碑</th>
+<th>内容</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>M1 领域内核</td>
+<td>值对象 + TradeCalendar + 四个聚合 + 领域单元测试全绿</td>
+<td>✅ 完成</td>
+</tr>
+<tr>
+<td>M2 流程闭环</td>
+<td>领域事件 + 应用层 + PostgreSQL 仓储 + 集成测试</td>
+<td>✅ 完成</td>
+</tr>
+<tr>
+<td>M3 接口与前端</td>
+<td>REST API + Vue3 页面（下单/订单/持仓/管理端）</td>
+<td>✅ 完成</td>
+</tr>
+<tr>
+<td>M4 部署上线</td>
+<td>云端部署（Cloudflare + Render + Neon）+ 端到端验收</td>
+<td>✅ 完成</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tabs", "navigation.top", "toc.integrate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@10.9.1/dist/mermaid.min.js"></script>
+      
+    
+  </body>
+</html>

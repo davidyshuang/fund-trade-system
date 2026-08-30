@@ -1,0 +1,1620 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="基金申购赎回管理系统 - 需求、设计、部署与使用文档">
+      
+      
+        <meta name="author" content="fund-trade-system">
+      
+      
+      
+        <link rel="prev" href="../05-adr/">
+      
+      
+        <link rel="next" href="../07-user-guide/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>部署与 CI/CD - 基金申购赎回管理系统</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://unpkg.com/mermaid@10.9.1/dist/mermaid.min.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#cicd" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="基金申购赎回管理系统" class="md-header__button md-logo" aria-label="基金申购赎回管理系统" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            基金申购赎回管理系统
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              部署与 CI/CD
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/davidyshuang/fund-trade-system" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    fund-trade-system
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../01-idea/" class="md-tabs__link">
+          
+  
+  
+  需求
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../04-design/" class="md-tabs__link">
+          
+  
+  
+  技术设计
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  部署与 CI/CD
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../07-user-guide/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  使用指南
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="基金申购赎回管理系统" class="md-nav__button md-logo" aria-label="基金申购赎回管理系统" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    基金申购赎回管理系统
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/davidyshuang/fund-trade-system" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    fund-trade-system
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    需求
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    需求
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-idea/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    创意愿景 Idea
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-brd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    业务需求 BRD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-prd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    产品需求 PRD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    技术设计
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    技术设计
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    系统设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-adr/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    架构决策 ADR
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    部署与 CI/CD
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    部署与 CI/CD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一、系统架构与地址总览
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        二、前置准备（3 个免费账号）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        三、第 0 步：准备代码
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-neon-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        四、第 1 步：创建数据库（Neon，约 3 分钟）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-render-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        五、第 2 步：部署后端（Render，约 5 分钟）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="五、第 2 步：部署后端（Render，约 5 分钟）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ablueprint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        方式 A：Blueprint 一键（推荐）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        方式 B：手动 Docker（替代方式）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-cloudflare-pages-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        六、第 3 步：部署前端（Cloudflare Pages，约 5 分钟）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="六、第 3 步：部署前端（Cloudflare Pages，约 5 分钟）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#adashboard-git-push" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        方式 A：Dashboard Git 集成（推荐，push 自动更新）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-wrangler-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        方式 B：本地 wrangler CLI（备选）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        七、部署后验证清单
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        八、日常更新（改代码自动上线）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cicd_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        九、CI/CD 持续集成与持续部署
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="九、CI/CD 持续集成与持续部署">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-git-push" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 总览：一次 git push 触发什么
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-ci-githubworkflowsciyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 CI（持续集成）— .github/workflows/ci.yml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-cd-1-render" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 CD 链路 1：后端 → Render
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#94-cd-2-cloudflare-pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.4 CD 链路 2：前端 → Cloudflare Pages
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#95-cd-3-github-pages-githubworkflowsdocsyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.5 CD 链路 3：文档站 → GitHub Pages — .github/workflows/docs.yml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#96" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.6 触发矩阵（改什么 → 触发什么）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#97-webhook-vs-github-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.7 自动触发机制揭秘：Webhook vs GitHub App
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#98-cicd-faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.8 CI/CD 常见问题（FAQ）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        十、注意事项与常见问题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        十一、一键本地开发（不影响线上）
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-user-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    使用指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="cicd">部署与 CI/CD 指南（从零开始）<a class="headerlink" href="#cicd" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>适用人群：无任何部署经验、想把这套系统免费部署到公网、并理解其自动发布机制的人。
+成本：<strong>0 元</strong>（三个平台均用免费额度）。耗时：首次部署约 30 分钟；之后 push 自动上线。</p>
+</blockquote>
+<h2 id="_1">一、系统架构与地址总览<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>浏览器
+  │
+  ▼
+Cloudflare Pages（前端 Vue3，免费静态托管 + 全球 CDN）
+  │  /api（已配 CORS 跨域）
+  ▼
+Render（后端 Java 21 + SpringBoot，免费实例）
+  │  jdbc:postgresql://...（sslmode=require）
+  ▼
+Neon（PostgreSQL 16 云数据库，免费 0.5GB）
+</code></pre></div>
+<p><strong>✅ 当前已上线可用地址：</strong></p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>地址</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>前端（Cloudflare Pages）</td>
+<td>https://fund-trade-system.931655086.workers.dev</td>
+<td>手机/电脑直接打开</td>
+</tr>
+<tr>
+<td>后端（Render API）</td>
+<td>https://fund-trade-system.onrender.com/api/products</td>
+<td>返回产品 JSON</td>
+</tr>
+<tr>
+<td>文档站（GitHub Pages）</td>
+<td>https://davidyshuang.github.io/fund-trade-system/</td>
+<td>本套文档</td>
+</tr>
+<tr>
+<td>代码仓库</td>
+<td>https://github.com/davidyshuang/fund-trade-system</td>
+<td>公开仓库</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3">二、前置准备（3 个免费账号）<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>GitHub</strong>：https://github.com —— 代码托管 + CI</li>
+<li><strong>Neon</strong>：https://neon.tech —— PostgreSQL 云数据库（GitHub 登录）</li>
+<li><strong>Render</strong>：https://render.com —— 后端托管（GitHub 登录）</li>
+<li><strong>Cloudflare</strong>：https://dash.cloudflare.com —— 前端托管（GitHub 登录）</li>
+</ol>
+<h2 id="0">三、第 0 步：准备代码<a class="headerlink" href="#0" title="Permanent link">&para;</a></h2>
+<p><strong>方式 A：已有仓库（推荐）</strong>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:davidyshuang/fund-trade-system.git
+<span class="nb">cd</span><span class="w"> </span>fund-trade-system
+</code></pre></div></p>
+<p><strong>方式 B：自己搭建</strong>（本系统代码结构）
+<div class="highlight"><pre><span></span><code>├── backend/     # Java 21 + SpringBoot 3.2 + PostgreSQL（DDD 四层，74 个测试）
+├── frontend/    # Vue3 + Vite + Element Plus（四视图）
+├── docs/        # 文档站（本目录）
+├── Dockerfile   # 后端镜像（多阶段构建，供 Render 用）
+├── render.yaml  # Render 部署蓝图
+├── mkdocs.yml   # 文档站配置
+└── .github/workflows/ci.yml   # GitHub Actions 自动测试
+└── .github/workflows/docs.yml # 文档站自动发布
+</code></pre></div></p>
+<h2 id="1-neon-3">四、第 1 步：创建数据库（Neon，约 3 分钟）<a class="headerlink" href="#1-neon-3" title="Permanent link">&para;</a></h2>
+<ol>
+<li>打开 https://neon.tech → GitHub 登录</li>
+<li>创建项目 → 区域建议选 <strong>Singapore</strong>（离国内更近）或 us-east-2</li>
+<li>进入 <strong>Connection Details</strong>，复制连接串，形如：
+   <div class="highlight"><pre><span></span><code>postgresql://neondb_owner:真实密码@ep-xxx.us-east-2.aws.neon.tech/neondb?sslmode=require
+</code></pre></div></li>
+<li>记下 6 个值（后面 Render 要用）：
+   | 值 | 示例 |
+   |---|---|
+   | DB_HOST | <code>ep-xxx.us-east-2.aws.neon.tech</code>（注意：<strong>去掉 <code>-pooler.c-5</code></strong>，用直连） |
+   | DB_PORT | <code>5432</code> |
+   | DB_NAME | <code>neondb</code> |
+   | DB_USERNAME | <code>neondb_owner</code> |
+   | DB_PASSWORD | 真实密码 |
+   | DB_SSLMODE | <code>require</code>（Neon 强制 SSL） |</li>
+</ol>
+<blockquote>
+<p>⚠️ 表结构无需手动建：系统启动时自动建 8 张表 + 写入演示数据（2 只基金、2 个账户、节假日）。</p>
+</blockquote>
+<h2 id="2-render-5">五、第 2 步：部署后端（Render，约 5 分钟）<a class="headerlink" href="#2-render-5" title="Permanent link">&para;</a></h2>
+<h3 id="ablueprint">方式 A：Blueprint 一键（推荐）<a class="headerlink" href="#ablueprint" title="Permanent link">&para;</a></h3>
+<ol>
+<li>https://render.com → GitHub 注册</li>
+<li><strong>New +</strong> → <strong>Blueprint</strong> → 选仓库 <code>fund-trade-system</code>
+   （自动读取根目录 <code>render.yaml</code>，Java 用 <strong>Docker</strong> 构建——Render 无原生 Java runtime）</li>
+<li>Apply 后等首次构建（约 5~10 分钟，含拉 Maven 镜像）</li>
+<li><strong>关键</strong>：部署完成后进服务 → <strong>Environment</strong> 页，填入第 1 步的 6 个变量：
+   <div class="highlight"><pre><span></span><code>DB_HOST=ep-xxx.us-east-2.aws.neon.tech
+DB_PORT=5432
+DB_NAME=neondb
+DB_USERNAME=neondb_owner
+DB_PASSWORD=真实密码
+DB_SSLMODE=require
+</code></pre></div></li>
+<li><strong>Save Changes</strong>（自动重新部署）</li>
+<li>等服务变 <strong>Live</strong>，访问 <code>https://fund-trade-system.onrender.com/api/products</code> 应返回产品 JSON</li>
+</ol>
+<h3 id="b-docker">方式 B：手动 Docker（替代方式）<a class="headerlink" href="#b-docker" title="Permanent link">&para;</a></h3>
+<p>Render → New Web Service → 选仓库 → Runtime 选 Docker → 同样填环境变量。</p>
+<blockquote>
+<p>💡 后端健康检查路径已在配置里指定 <code>/api/products</code>。</p>
+</blockquote>
+<h2 id="3-cloudflare-pages-5">六、第 3 步：部署前端（Cloudflare Pages，约 5 分钟）<a class="headerlink" href="#3-cloudflare-pages-5" title="Permanent link">&para;</a></h2>
+<h3 id="adashboard-git-push">方式 A：Dashboard Git 集成（推荐，push 自动更新）<a class="headerlink" href="#adashboard-git-push" title="Permanent link">&para;</a></h3>
+<ol>
+<li>https://dash.cloudflare.com → <strong>Workers &amp; Pages</strong> → <strong>Create</strong> → <strong>Pages</strong> → <strong>Connect to Git</strong></li>
+<li>授权并选择仓库 <code>fund-trade-system</code></li>
+<li><strong>构建设置（关键，4 个字段分开填）：</strong></li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Root directory</strong></td>
+<td><code>frontend</code>（不是 <code>/</code>！package.json 在子目录）</td>
+</tr>
+<tr>
+<td><strong>Build command</strong></td>
+<td><code>npm run build</code>（只填这个！）</td>
+</tr>
+<tr>
+<td><strong>Build output directory</strong></td>
+<td><code>dist</code></td>
+</tr>
+<tr>
+<td><strong>Build variables</strong></td>
+<td><code>VITE_API_BASE</code> = <code>https://fund-trade-system.onrender.com</code></td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li><strong>Deploy command</strong> 字段：新版 UI <strong>必填</strong>，填 <code>npx wrangler deploy</code>
+   （仓库 <code>frontend/wrangler.toml</code> 已配好 wrangler v4 的 <code>[assets] directory = "./dist"</code> 语法）</li>
+<li><strong>Save and Deploy</strong> → 等待构建完成，成功日志：
+   <div class="highlight"><pre><span></span><code>Success: Build command completed
+Deployed fund-trade-system triggers
+https://fund-trade-system.931655086.workers.dev   ← 你的前端地址
+</code></pre></div></li>
+</ol>
+<h3 id="b-wrangler-cli">方式 B：本地 wrangler CLI（备选）<a class="headerlink" href="#b-wrangler-cli" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>frontend
+<span class="nv">VITE_API_BASE</span><span class="o">=</span>https://fund-trade-system.onrender.com<span class="w"> </span>npm<span class="w"> </span>run<span class="w"> </span>build
+npx<span class="w"> </span>wrangler<span class="w"> </span>login<span class="w">        </span><span class="c1"># 首次授权</span>
+npx<span class="w"> </span>wrangler<span class="w"> </span>deploy<span class="w">       </span><span class="c1"># 读取 wrangler.toml，上传 dist</span>
+</code></pre></div>
+<h2 id="_2">七、部署后验证清单<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>检查项</th>
+<th>命令/操作</th>
+<th>期望</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>后端健康</td>
+<td>浏览器打开 <code>https://fund-trade-system.onrender.com/api/products</code></td>
+<td>返回 <code>{"code":0,...,"data":{"list":[...]}}</code></td>
+</tr>
+<tr>
+<td>申购流程</td>
+<td><code>curl -X POST https://fund-trade-system.onrender.com/api/orders/subscription -H "Content-Type: application/json" -d '{"customerId":"C001","productId":"P001","subscriptionAmount":"10000.00"}'</code></td>
+<td>返回订单号 + <code>FUNDS_FROZEN</code></td>
+</tr>
+<tr>
+<td>前端页面</td>
+<td>打开 workers.dev 地址</td>
+<td>右上角绿色「后端已连接」+ 2 只基金产品列表</td>
+</tr>
+<tr>
+<td>管理端</td>
+<td>页面「管理端」Tab → 发布净值 → 触发 T+1 确认</td>
+<td>返回确认成功计数</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_3">八、日常更新（改代码自动上线）<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<p><div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>-A<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"xxx"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>main
+</code></pre></div>
+- <strong>GitHub Actions</strong>：自动跑后端 74 测试 + 前端构建（质量门禁）
+- <strong>Cloudflare</strong>：自动重新构建部署前端
+- <strong>Render</strong>：autoDeploy 自动重新构建部署后端
+- <strong>GitHub Pages</strong>：docs/ 变更自动重新发布文档站</p>
+<h2 id="cicd_1">九、CI/CD 持续集成与持续部署<a class="headerlink" href="#cicd_1" title="Permanent link">&para;</a></h2>
+<h3 id="91-git-push">9.1 总览：一次 <code>git push</code> 触发什么<a class="headerlink" href="#91-git-push" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>git push origin main
+    │
+    ├─▶ 🔵 GitHub Actions「CI」        → 质量门禁（74 测试 + 前端构建）
+    ├─▶ 🟢 Render 自动部署（后端）     → autoDeploy 检测到 push
+    ├─▶ 🟠 Cloudflare 自动部署（前端） → Git 集成检测到 push
+    └─▶ 🔴 GitHub Actions「Docs」      → 仅 docs/ 变更时触发 → github.io 自动更新
+</code></pre></div>
+<p>四条链路全部<strong>自动触发、零人工干预</strong>。</p>
+<h3 id="92-ci-githubworkflowsciyml">9.2 CI（持续集成）— <code>.github/workflows/ci.yml</code><a class="headerlink" href="#92-ci-githubworkflowsciyml" title="Permanent link">&para;</a></h3>
+<p><strong>触发条件</strong>：push 到 <code>main</code>/<code>master</code> 或任何 PR</p>
+<div class="highlight"><pre><span></span><code><span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">main</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">master</span><span class="w"> </span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span>
+</code></pre></div>
+<p><strong>两个并行 Job</strong>（任意一个失败 = PR 被拦）：</p>
+<table>
+<thead>
+<tr>
+<th>Job</th>
+<th>环境</th>
+<th>做什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>backend-test</code></td>
+<td>JDK21（temurin）+ <strong>PostgreSQL 16 服务容器</strong></td>
+<td><code>mvn test</code> → 74 个测试（领域单测 + 集成 + API 冒烟）跑在真实 PG 上</td>
+</tr>
+<tr>
+<td><code>frontend-build</code></td>
+<td>Node 22</td>
+<td><code>npm ci</code> + <code>npm run build</code> → 前端可构建性验证</td>
+</tr>
+</tbody>
+</table>
+<p><strong>PostgreSQL 服务容器</strong>（测试基础设施）：</p>
+<div class="highlight"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">postgres</span><span class="p">:</span><span class="w">                    </span><span class="c1"># 起一个临时 PG 16 容器</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres:16</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">5432</span><span class="p p-Indicator">:</span><span class="nv">5432</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">env</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> POSTGRES_USER</span><span class="p">:</span><span class="w"> </span><span class="nv">postgres</span><span class="p p-Indicator">,</span><span class="nt"> POSTGRES_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="nv">postgres</span><span class="p p-Indicator">,</span><span class="nt"> POSTGRES_DB</span><span class="p">:</span><span class="w"> </span><span class="nv">fund_trade_test</span><span class="w"> </span><span class="p p-Indicator">}</span>
+<span class="c1"># 测试时注入连接串（测试配置 PgTestConfig 读取环境变量）</span>
+<span class="nt">TEST_DB_URL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jdbc:postgresql://localhost:5432/fund_trade_test</span>
+</code></pre></div>
+<blockquote>
+<p>作用：每次 push 自动验证"代码没坏"，PR 合并前自动把关，无需人肉跑测试。</p>
+</blockquote>
+<h3 id="93-cd-1-render">9.3 CD 链路 1：后端 → Render<a class="headerlink" href="#93-cd-1-render" title="Permanent link">&para;</a></h3>
+<p><strong>原理</strong>：<code>render.yaml</code> 中 <code>autoDeploy: true</code> —— Render 监听 GitHub 仓库，检测到 main 新 commit 自动重新部署：</p>
+<div class="highlight"><pre><span></span><code>push → Render 收到通知 → 重新 Docker 构建（Dockerfile）→ 起新容器 → 切流
+</code></pre></div>
+<ul>
+<li><strong>构建</strong>：多阶段 Dockerfile（<code>mvn package</code> → JRE21 运行镜像）</li>
+<li><strong>环境变量</strong>：Neon 连接（<code>DB_HOST/DB_PORT/DB_NAME/DB_USERNAME/DB_PASSWORD/DB_SSLMODE</code>）</li>
+<li><strong>健康检查</strong>：<code>/api/products</code>，不健康自动标记失败</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># render.yaml 关键配置</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fund-trade-backend</span>
+<span class="w">  </span><span class="nt">runtime</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker</span><span class="w">        </span><span class="c1"># Render 无原生 Java runtime，必须 Docker</span>
+<span class="w">  </span><span class="nt">plan</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">free</span>
+<span class="w">  </span><span class="nt">autoDeploy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">healthCheckPath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/api/products</span>
+</code></pre></div>
+<h3 id="94-cd-2-cloudflare-pages">9.4 CD 链路 2：前端 → Cloudflare Pages<a class="headerlink" href="#94-cd-2-cloudflare-pages" title="Permanent link">&para;</a></h3>
+<p><strong>原理</strong>：Cloudflare Pages 的 <strong>Git 集成</strong>（连接 GitHub 仓库），push 后自动构建：</p>
+<div class="highlight"><pre><span></span><code>push → Cloudflare 拉代码 → cd frontend → npm ci &amp;&amp; npm run build → 上传 dist/ → 发布
+</code></pre></div>
+<p><strong>关键配置</strong>（Cloudflare Dashboard 上填写，见第六章）：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Root directory</td>
+<td><code>frontend</code>（子目录！）</td>
+</tr>
+<tr>
+<td>Build command</td>
+<td><code>npm run build</code></td>
+</tr>
+<tr>
+<td>Build output directory</td>
+<td><code>dist</code></td>
+</tr>
+<tr>
+<td>Build variables</td>
+<td><code>VITE_API_BASE = https://fund-trade-system.onrender.com</code></td>
+</tr>
+<tr>
+<td>Deploy command</td>
+<td><code>npx wrangler deploy</code>（配合 <code>frontend/wrangler.toml</code> 的 <code>[assets]</code> 语法）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>构建产物哈希变化即新版本（如 <code>index-CgoIaJM9.js</code>），可通过 assets 文件名判断是否已更新。</p>
+</blockquote>
+<h3 id="95-cd-3-github-pages-githubworkflowsdocsyml">9.5 CD 链路 3：文档站 → GitHub Pages — <code>.github/workflows/docs.yml</code><a class="headerlink" href="#95-cd-3-github-pages-githubworkflowsdocsyml" title="Permanent link">&para;</a></h3>
+<p><strong>触发</strong>：仅当 <code>docs/**</code> 或 <code>mkdocs.yml</code> 变更（避免每次 push 都重建文档）</p>
+<div class="highlight"><pre><span></span><code><span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">main</span><span class="w"> </span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">paths</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'docs/**'</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'mkdocs.yml'</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'.github/workflows/docs.yml'</span>
+<span class="w">  </span><span class="nt">workflow_dispatch</span><span class="p">:</span>
+
+<span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mkdocs gh-deploy --force</span>
+</code></pre></div>
+<p><strong>流程</strong>：docs/ 变更 → Actions 构建静态站 → 强制推送 <code>gh-pages</code> 分支 → GitHub Pages 自动发布。</p>
+<blockquote>
+<p>⚠️ 注意：GitHub Pages 的 <code>gh-pages</code> 分支部署<strong>仅对公开仓库免费</strong>；私有仓库需付费计划（本项目已转公开）。</p>
+</blockquote>
+<h3 id="96">9.6 触发矩阵（改什么 → 触发什么）<a class="headerlink" href="#96" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>改了什么</th>
+<th>CI 测试</th>
+<th>Render 后端</th>
+<th>Cloudflare 前端</th>
+<th>文档站</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>backend/**</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>frontend/**</code></td>
+<td>✅</td>
+<td>—</td>
+<td>✅</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>docs/**</code> 或 <code>mkdocs.yml</code></td>
+<td>✅</td>
+<td>—</td>
+<td>—</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>Dockerfile</code>/<code>render.yaml</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>其他（README 等）</td>
+<td>✅（保守全量）</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>CI 目前对所有 push 全量运行（未做 paths 过滤），是<strong>保守策略</strong>；如需提速可给 <code>ci.yml</code> 增加 <code>paths</code>。</p>
+</blockquote>
+<h3 id="97-webhook-vs-github-app">9.7 自动触发机制揭秘：Webhook vs GitHub App<a class="headerlink" href="#97-webhook-vs-github-app" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>常见疑问：GitHub 仓库并没有配置 webhook，Render/Cloudflare 是怎么知道有新 commit 的？</p>
+</blockquote>
+<p><strong>事实核查结果</strong>：仓库 <code>Settings → Webhooks</code> 列表为 <strong>空</strong>（<code>gh api .../hooks</code> 返回 <code>[]</code>），没有传统 Repository Webhook；但部署确实每次 push 自动触发。</p>
+<p><strong>真相：靠「GitHub App 集成」，不是传统 webhook</strong></p>
+<p>Render 和 Cloudflare 连接 GitHub 时，走的是 <strong>GitHub App（应用集成）</strong> 机制：</p>
+<div class="highlight"><pre><span></span><code>你 git push
+    │
+    ▼
+GitHub 平台内部事件（push）
+    │
+    ├─▶ GitHub Actions 直接触发            ← 平台内，无需 webhook
+    │
+    ├─▶ GitHub App「Render」账号级 webhook  ← App 服务器收到 → 过滤出本仓库 → 自动部署
+    │
+    └─▶ GitHub App「Cloudflare」账号级 webhook ← 同理 → 自动构建
+</code></pre></div>
+<p><strong>两种机制对比：</strong></p>
+<table>
+<thead>
+<tr>
+<th>机制</th>
+<th>在哪里注册</th>
+<th>仓库 Webhooks 列表能看到吗</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>传统 Repository Webhook</td>
+<td>每个仓库 <code>Settings → Webhooks</code></td>
+<td>✅ 能看到（URL 形如 <code>api.render.com/v1/webhooks/...</code>）</td>
+</tr>
+<tr>
+<td><strong>GitHub App 集成</strong>（Render/Cloudflare 所用）</td>
+<td><strong>账号级</strong>安装，App 服务器注册全局端点</td>
+<td>❌ 看不到（GitHub 把事件推给 App 自身，不在仓库 hooks 里）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>如何在网页验证</strong>：
+1. 仓库 → <strong>Settings → Integrations</strong>：<code>https://github.com/&lt;owner&gt;/&lt;repo&gt;/settings/installations</code>
+2. 或账号头像 → <strong>Settings → Applications → Installed GitHub Apps</strong>
+3. 应能看到 <strong>Render</strong> 与 <strong>Cloudflare</strong> 已安装且关联本仓库</p>
+<p><strong>四条触发链路归属总结：</strong></p>
+<table>
+<thead>
+<tr>
+<th>触发链路</th>
+<th>机制</th>
+<th>归属</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CI 测试（Actions）</td>
+<td>GitHub 平台内原生触发</td>
+<td>GitHub 内部</td>
+</tr>
+<tr>
+<td>后端部署（Render）</td>
+<td>GitHub App 账号级 webhook</td>
+<td>Render 服务器</td>
+</tr>
+<tr>
+<td>前端部署（Cloudflare）</td>
+<td>GitHub App 账号级 webhook</td>
+<td>Cloudflare 服务器</td>
+</tr>
+<tr>
+<td>文档站（gh-pages）</td>
+<td>GitHub Actions <code>mkdocs gh-deploy</code></td>
+<td>GitHub 内部</td>
+</tr>
+</tbody>
+</table>
+<p><strong>一句话</strong>：不是"把 webhook 配到仓库"，而是"GitHub 通过 App 集成把 push 事件推给 Render/Cloudflare 的服务器"，它们在云端接收后自动构建部署——你只管 push，剩下全自动。</p>
+<h3 id="98-cicd-faq">9.8 CI/CD 常见问题（FAQ）<a class="headerlink" href="#98-cicd-faq" title="Permanent link">&para;</a></h3>
+<p><strong>Q1：push 后多久上线？</strong>
+- CI：50 秒左右（74 测试 + 前端构建）
+- Render 后端：2~5 分钟（Docker 构建）
+- Cloudflare 前端：1~2 分钟
+- 文档站：约 1 分钟（含 GitHub Pages 构建）</p>
+<p><strong>Q2：CI 失败会怎样？</strong>
+- 会显示红色 ✗，PR 被拦截；但<strong>不会阻止</strong> Render/Cloudflare 部署（部署走独立 webhook 链路，与 Actions 无关）——如需"测试通过才部署"，可给 Render/Cloudflare 配 CI 状态门禁（高级话题）。</p>
+<p><strong>Q3：怎么看 CI/CD 是否成功？</strong>
+- Actions 页面：https://github.com/davidyshuang/fund-trade-system/actions
+- 每个 commit 旁边的 ✓/✗ 标识</p>
+<p><strong>Q4：如何手动触发？</strong>
+- CI / Docs：Actions 页面 → 选 workflow → <strong>Run workflow</strong>（docs.yml 已开启 <code>workflow_dispatch</code>）
+- Render / Cloudflare：各自 Dashboard 的 <strong>Deploy / Redeploy</strong> 按钮</p>
+<h2 id="_4">十、注意事项与常见问题<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Render 免费实例休眠</td>
+<td>15 分钟无访问自动休眠，下次首个请求冷启动 30~60 秒（正常）</td>
+</tr>
+<tr>
+<td>Neon 计算节点休眠</td>
+<td>免费层自动休眠，首次连接慢/失败可到 Neon SQL Editor 执行 <code>SELECT 1;</code> 唤醒</td>
+</tr>
+<tr>
+<td>国内直连 Neon 失败</td>
+<td>国内网络访问美国 PG 端口会被干扰（SSLRequest 即断连），属正常；Render（美国）连 Neon 不受影响</td>
+</tr>
+<tr>
+<td>链接公开</td>
+<td>部署后任何人拿到链接可访问演示数据，<strong>勿录入真实资金/隐私数据</strong></td>
+</tr>
+<tr>
+<td>密码安全</td>
+<td>Neon 密码若泄露，到 Neon <strong>Reset password</strong> 轮换，并同步更新 Render <code>DB_PASSWORD</code></td>
+</tr>
+<tr>
+<td>端口</td>
+<td>Render 通过 <code>PORT</code> 环境变量注入（Dockerfile 已处理 <code>${PORT:-8080}</code>）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>已踩过的坑（避免重蹈）：</strong>
+1. Render 无原生 Java runtime → 必须 Docker 部署
+2. Neon 强制 SSL → JDBC URL 必须 <code>sslmode=require</code>
+3. Render 服务实际域名看日志「primary URL」，不是想当然的地址
+4. Cloudflare Pages 的 Root directory 必须 <code>frontend</code>（子目录）
+5. Build command 与 Output directory 是<strong>两个字段</strong>，勿拼在一起
+6. 新版 Cloudflare UI 的 Deploy command 必填 → <code>npx wrangler deploy</code> + <code>[assets]</code> 语法</p>
+<h2 id="_5">十一、一键本地开发（不影响线上）<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="c1"># 后端（连本机 PostgreSQL）</span>
+<span class="nb">cd</span><span class="w"> </span>backend<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>mvn<span class="w"> </span>spring-boot:run<span class="w"> </span>--server.port<span class="o">=</span><span class="m">8080</span>
+<span class="c1"># 前端（Vite 代理到 8080）</span>
+<span class="nb">cd</span><span class="w"> </span>frontend<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>npm<span class="w"> </span>run<span class="w"> </span>dev<span class="w">   </span><span class="c1"># http://localhost:5173</span>
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tabs", "navigation.top", "toc.integrate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@10.9.1/dist/mermaid.min.js"></script>
+      
+    
+  </body>
+</html>
