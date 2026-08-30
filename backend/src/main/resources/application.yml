@@ -5,7 +5,8 @@ server:
 spring:
   datasource:
     # 默认连接本机 Homebrew PostgreSQL；部署/CI 可用环境变量覆盖（见 .github/workflows/ci.yml）
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:fund_trade}
+    # Neon 等云数据库强制 SSL，需设置 DB_SSLMODE=require；本机 PG 默认 disable
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:fund_trade}?sslmode=${DB_SSLMODE:disable}
     username: ${DB_USERNAME:${USER}}
     password: ${DB_PASSWORD:}
     driver-class-name: org.postgresql.Driver
