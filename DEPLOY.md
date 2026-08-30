@@ -57,6 +57,23 @@
 
 ## 第 3 步：部署前端到 Cloudflare Pages（约 5 分钟）
 
+### 方式 A：wrangler CLI（命令行，推荐快速上手）
+
+项目已内置 `frontend/wrangler.toml`（指定 `pages_build_output_dir = "dist"`）。在 `frontend/` 目录执行：
+
+```bash
+cd frontend
+# 1. 构建（必须！生成 dist 产物；VITE_API_BASE 指向后端地址）
+VITE_API_BASE=https://fund-trade-system.onrender.com npm run build
+# 2. 部署（新版 wrangler 用 deploy；wrangler.toml 已指向 dist，不要传目录参数）
+npx wrangler deploy
+```
+
+> ⚠️ 常见坑：**不要**执行 `wrangler deploy frontend`（会把源码传上去导致白屏）；wrangler.toml 已指定 `pages_build_output_dir = "dist"`，直接 `wrangler deploy` 即可。
+> 首次运行会要求登录 Cloudflare 账号（浏览器弹窗授权）。
+
+### 方式 B：Dashboard Git 集成（推荐长期，自动更新）
+
 1. 打开 https://dash.cloudflare.com → 注册（免费）→ 左侧 **Workers & Pages**
 2. 点 **Create** → **Pages** → **Connect to Git** → 授权并选择 `fund-trade-system`
 3. 构建配置：
