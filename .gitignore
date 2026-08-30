@@ -45,3 +45,4 @@ skills-lock.json
 /package.json
 neon.ts
 types.gen.d.ts.map
+/package-lock.json
