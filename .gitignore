@@ -28,3 +28,10 @@ frontend/dist/
 .workbuddy/
 .neon
 .env.local
+
+# ── 工具自动生成（勿提交）──
+node_modules/
+.agents/
+.scripts/
+skills-lock.json
+/package.json
