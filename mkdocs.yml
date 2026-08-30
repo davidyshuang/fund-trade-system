@@ -1,0 +1,61 @@
+# 文档站配置（mkdocs + material 主题）
+site_name: 基金申购赎回管理系统
+site_description: 基金申购赎回管理系统 - 需求、设计、部署与使用文档
+site_author: fund-trade-system
+repo_url: https://github.com/davidyshuang/fund-trade-system
+repo_name: fund-trade-system
+docs_dir: docs
+site_dir: site
+
+theme:
+  name: material
+  language: zh
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - navigation.top
+    - toc.integrate
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: 切换到深色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: 切换到浅色模式
+
+nav:
+  - 首页: index.md
+  - 需求:
+      - 创意愿景 Idea: 01-idea.md
+      - 业务需求 BRD: 02-brd.md
+      - 产品需求 PRD: 03-prd.md
+  - 技术设计:
+      - 系统设计: 04-design.md
+      - 架构决策 ADR: 05-adr.md
+  - 部署指南: 06-deployment.md
+  - 使用指南: 07-user-guide.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - tables
+  - toc:
+      permalink: true
+
+extra_javascript:
+  - https://unpkg.com/mermaid@10.9.1/dist/mermaid.min.js
+
+extra_css:
+  - https://unpkg.com/mermaid@10.9.1/dist/mermaid.min.css

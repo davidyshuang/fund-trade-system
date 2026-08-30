@@ -1,9 +1,7 @@
-# 基金申购赎回管理系统 · 部署指南（从零开始）
+# 部署指南（从零开始）
 
 > 适用人群：无任何部署经验、想把这套系统免费部署到公网的人。
 > 成本：**0 元**（三个平台均用免费额度）。耗时：约 30 分钟。
-
----
 
 ## 一、系统架构与地址总览
 
@@ -27,9 +25,6 @@ Neon（PostgreSQL 16 云数据库，免费 0.5GB）
 | 前端（Cloudflare Pages） | https://fund-trade-system.931655086.workers.dev | 手机/电脑直接打开 |
 | 后端（Render API） | https://fund-trade-system.onrender.com/api/products | 返回产品 JSON |
 | 代码仓库 | https://github.com/davidyshuang/fund-trade-system | 私有仓库 |
-| 前端（临时演示） | https://8e1737dd672c4560b191e167385be015.app.workbuddy.link | 可停用 |
-
----
 
 ## 二、前置准备（3 个免费账号）
 
@@ -37,8 +32,6 @@ Neon（PostgreSQL 16 云数据库，免费 0.5GB）
 2. **Neon**：https://neon.tech —— PostgreSQL 云数据库（GitHub 登录）
 3. **Render**：https://render.com —— 后端托管（GitHub 登录）
 4. **Cloudflare**：https://dash.cloudflare.com —— 前端托管（GitHub 登录）
-
----
 
 ## 三、第 0 步：准备代码
 
@@ -52,12 +45,11 @@ cd fund-trade-system
 ```
 ├── backend/     # Java 21 + SpringBoot 3.2 + PostgreSQL（DDD 四层，74 个测试）
 ├── frontend/    # Vue3 + Vite + Element Plus（四视图）
+├── docs/        # 文档站（本目录）
 ├── Dockerfile   # 后端镜像（多阶段构建，供 Render 用）
 ├── render.yaml  # Render 部署蓝图
 └── .github/workflows/ci.yml  # GitHub Actions 自动测试
 ```
-
----
 
 ## 四、第 1 步：创建数据库（Neon，约 3 分钟）
 
@@ -78,8 +70,6 @@ cd fund-trade-system
    | DB_SSLMODE | `require`（Neon 强制 SSL） |
 
 > ⚠️ 表结构无需手动建：系统启动时自动建 8 张表 + 写入演示数据（2 只基金、2 个账户、节假日）。
-
----
 
 ## 五、第 2 步：部署后端（Render，约 5 分钟）
 
@@ -104,8 +94,6 @@ cd fund-trade-system
 Render → New Web Service → 选仓库 → Runtime 选 Docker → 同样填环境变量。
 
 > 💡 后端健康检查路径已在配置里指定 `/api/products`。
-
----
 
 ## 六、第 3 步：部署前端（Cloudflare Pages，约 5 分钟）
 
@@ -138,8 +126,6 @@ npx wrangler login        # 首次授权
 npx wrangler deploy       # 读取 wrangler.toml，上传 dist
 ```
 
----
-
 ## 七、部署后验证清单
 
 | 检查项 | 命令/操作 | 期望 |
@@ -149,8 +135,6 @@ npx wrangler deploy       # 读取 wrangler.toml，上传 dist
 | 前端页面 | 打开 workers.dev 地址 | 右上角绿色「后端已连接」+ 2 只基金产品列表 |
 | 管理端 | 页面「管理端」Tab → 发布净值 → 触发 T+1 确认 | 返回确认成功计数 |
 
----
-
 ## 八、日常更新（改代码自动上线）
 
 ```bash
@@ -159,8 +143,6 @@ git add -A && git commit -m "xxx" && git push origin main
 - **GitHub Actions**：自动跑后端 74 测试 + 前端构建（质量门禁）
 - **Cloudflare**：自动重新构建部署前端
 - **Render**：autoDeploy 自动重新构建部署后端
-
----
 
 ## 九、注意事项与常见问题
 
@@ -180,8 +162,6 @@ git add -A && git commit -m "xxx" && git push origin main
 4. Cloudflare Pages 的 Root directory 必须 `frontend`（子目录）
 5. Build command 与 Output directory 是**两个字段**，勿拼在一起
 6. 新版 Cloudflare UI 的 Deploy command 必填 → `npx wrangler deploy` + `[assets]` 语法
-
----
 
 ## 十、一键本地开发（不影响线上）
 

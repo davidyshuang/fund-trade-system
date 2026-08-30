@@ -46,3 +46,6 @@ skills-lock.json
 neon.ts
 types.gen.d.ts.map
 /package-lock.json
+
+# ── mkdocs 构建产物 ──
+site/
