@@ -40,6 +40,7 @@ nav:
   - 技术设计:
       - 系统设计: 04-design.md
       - 架构决策 ADR: 05-adr.md
+      - CI/CD 持续集成与部署: cicd.md
   - 部署指南: 06-deployment.md
   - 使用指南: 07-user-guide.md
 
