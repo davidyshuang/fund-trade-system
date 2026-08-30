@@ -2,8 +2,11 @@ import axios from 'axios'
 import { ElMessage } from 'element-plus'
 
 // axios 实例：统一处理后端 ApiResponse 结构（code=0 成功）
+// 生产环境通过 VITE_API_BASE 指定后端地址（如 https://xxx.onrender.com）；
+// 本地开发留空，走 Vite 代理（/api → localhost:8080）。
+const API_BASE = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '')
 const http = axios.create({
-  baseURL: '/api',
+  baseURL: API_BASE + '/api',
   timeout: 15000
 })
 

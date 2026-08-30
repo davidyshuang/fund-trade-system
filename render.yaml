@@ -1,0 +1,36 @@
+# ============================================================
+# Render Blueprint —— 一键部署基金申购赎回系统后端（免费实例）
+# 用法：https://render.com → New → Blueprint → 选择本仓库
+# 数据库：使用 Neon 免费 PostgreSQL（https://neon.tech），
+#        部署完成后在 Dashboard → Environment 填入 Neon 连接值。
+# 注意：下方 envVars 为占位示例（sync:false 表示以 Dashboard 手工配置为准）。
+# ============================================================
+services:
+  - type: web
+    name: fund-trade-backend
+    runtime: java
+    plan: free
+    region: oregon
+    autoDeploy: true
+    healthCheckPath: /api/products
+    buildCommand: mvn -B package -DskipTests
+    startCommand: java -jar target/fund-trade-backend-0.1.0-SNAPSHOT.jar
+    envVars:
+      # ── 部署后请到 Dashboard → Environment 填入 Neon 真实值 ──
+      # ① Neon 建库后拿到连接串：postgresql://user:pass@host:5432/db
+      # ② 把 host / port / db / user / pass 分别填入下面 5 个变量
+      - key: DB_HOST
+        value: ep-example.us-east-2.aws.neon.tech
+        sync: false
+      - key: DB_PORT
+        value: "5432"
+        sync: false
+      - key: DB_NAME
+        value: fund_trade
+        sync: false
+      - key: DB_USERNAME
+        value: fund_trade_owner
+        sync: false
+      - key: DB_PASSWORD
+        value: neon-password
+        sync: false
