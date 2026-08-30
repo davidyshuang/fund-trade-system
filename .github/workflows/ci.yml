@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+
+jobs:
+  # ── 后端：全量测试（领域单测 + 集成测试 + API 冒烟，跑在 PostgreSQL 16 上）──
+  backend-test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: fund_trade_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装 JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: 后端全量测试（PostgreSQL 16）
+        working-directory: backend
+        env:
+          TEST_DB_URL: jdbc:postgresql://localhost:5432/fund_trade_test
+          TEST_DB_USERNAME: postgres
+          TEST_DB_PASSWORD: postgres
+        run: mvn -B test
+
+  # ── 前端：依赖安装 + 生产构建 ──
+  frontend-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装 Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: 前端构建
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build

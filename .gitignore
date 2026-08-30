@@ -1,0 +1,28 @@
+# ── Java / Maven ──
+backend/target/
+*.class
+*.jar
+!.mvn/wrapper/*.jar
+
+# ── Node / Vite ──
+frontend/node_modules/
+frontend/dist/
+
+# ── 数据库文件（SQLite 时代遗留，已迁移 PG）──
+*.db
+*.sqlite
+
+# ── IDE / 编辑器 ──
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+
+# ── 系统 ──
+.DS_Store
+
+# ── 日志 ──
+*.log
+
+# ── WorkBuddy 内部数据（不进公共仓库）──
+.workbuddy/
