@@ -26,3 +26,5 @@ frontend/dist/
 
 # ── WorkBuddy 内部数据（不进公共仓库）──
 .workbuddy/
+.neon
+.env.local

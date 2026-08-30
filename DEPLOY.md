@@ -49,9 +49,9 @@
      | `DB_USERNAME` | Neon 的 user |
      | `DB_PASSWORD` | Neon 的 password |
    - 点 **Save Changes**（会自动重新部署）
-5. 等部署完成后，打开服务地址（形如 `https://fund-trade-backend.onrender.com`），访问 `/api/products` 应返回产品 JSON。
+5. 等部署完成后，打开服务地址（形如 `https://fund-trade-system.onrender.com`），访问 `/api/products` 应返回产品 JSON。
    > 💡 首次访问免费实例需要冷启动 30~60 秒，请耐心等待。
-   > 📌 记下后端地址，下一步要用（形如 `https://fund-trade-backend.onrender.com`）。
+   > 📌 记下后端地址，下一步要用（形如 `https://fund-trade-system.onrender.com`）。
 
 ---
 
@@ -67,7 +67,7 @@
 4. 展开 **Environment variables**，添加：
    | 变量 | 值 |
    |---|---|
-   | `VITE_API_BASE` | 第 2 步的后端地址，如 `https://fund-trade-backend.onrender.com`（**不带**末尾斜杠） |
+   | `VITE_API_BASE` | 第 2 步的后端地址，如 `https://fund-trade-system.onrender.com`（**不带**末尾斜杠） |
 5. 点 **Save and Deploy**
 6. 部署完成后访问 `https://<项目名>.pages.dev`，即为你的基金管理系统前端。
 
